@@ -1,0 +1,17 @@
+python-pptx
+pdfplumber
+lime
+PyMuPDF
+llama_parse
+uvloop
+nest_asyncio
+asyncio
+gradio_highlightedtextlabeldefault
+dropboxdrivefs
+setuptools
+dspy-ai 
+datasets 
+torch 
+sentence_transformers
+openai 
+langchain_openai
