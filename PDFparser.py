@@ -1,41 +1,33 @@
-# llama-parse is async-first, running the sync code in a notebook requires the use of nest_asyncio
-import nest_asyncio
-from llama_parse import LlamaParse
-import os
+"""Backward-compatible parser utility wrapper."""
 
-nest_asyncio.apply()
+from __future__ import annotations
 
+import sys
+from pathlib import Path
 
-parser = LlamaParse(
-    api_key="",  # can also be set in your env as LLAMA_CLOUD_API_KEY
-    result_type="markdown",  # "markdown" and "json" are available
-    num_workers=4, # if multiple files passed, split in `num_workers` API calls
-    verbose=True,
-    language="en", # Optionaly you can define a language, default=en
-    parsing_instruction="""The provided document is a presentation slide deck.
-    It could containg tables, images, diagrams and text. Extract the text content from the document. Output any math equation in LATEX markdown (between $$).
-    For diagrams and images additionally decribe the visual content. Be as concise as possible. Multiple lives are at stake. You must get this right."""
-)
+PROJECT_ROOT = Path(__file__).resolve().parent
+SRC_DIR = PROJECT_ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from sess.config.settings import get_settings  # noqa: E402
+from sess.domain.constants import FACTUALITY_PARSE_INSTRUCTION  # noqa: E402
+from sess.infrastructure.clients.llama_parse_client import LlamaParseClient  # noqa: E402
 
 
-
-
-
-def parse_pdf(file_path):
-    documents = parser.load_data(file_path)
-    #json_objs = parser.get_json_result(file_path)
-    #json_list = json_objs[0]["pages"]
-    return documents
-
-
-
+def parse_pdf(file_path: str) -> str:
+    settings = get_settings()
+    client = LlamaParseClient(
+        api_key=settings.llama_cloud_api_key,
+        parsing_instruction=FACTUALITY_PARSE_INSTRUCTION,
+    )
+    return client.parse_to_markdown(file_path)
 
 
 if __name__ == "__main__":
-    #get the path of the current file
-    path = os.path.realpath(__file__)
-    #construct the path to the PDF file
-    path = os.path.dirname(path) + "/ChatGPT_BeyondtheHype.pdf"
+    import os
 
-    target_page = 20
-    print(parse_pdf(path)[0].text.split("\n---\n")[target_page])
+    path = os.path.realpath(__file__)
+    target = Path(path).parent / "ChatGPT_BeyondtheHype.pdf"
+    print(parse_pdf(str(target)))
+
