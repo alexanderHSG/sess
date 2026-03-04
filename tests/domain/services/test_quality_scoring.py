@@ -1,3 +1,5 @@
+import pytest
+
 from sess.domain.services.quality_scoring import aggregate_quality_scores
 
 
@@ -13,8 +15,8 @@ def test_aggregate_quality_scores_groups_contributions() -> None:
 
     result = aggregate_quality_scores(rows, "speaker_other")
 
-    assert result.reputational == 1.2
-    assert result.contextual == 0.5
-    assert result.representational == 0.15000000000000002
-    assert result.intrinsic == -0.12
+    assert result.reputational == pytest.approx(1.2)
+    assert result.contextual == pytest.approx(0.5)
+    assert result.representational == pytest.approx(0.15)
+    assert result.intrinsic == pytest.approx(-0.12)
 
