@@ -69,7 +69,10 @@ def html_transformer(predicted_views: int, scores: QualityScores) -> tuple[str, 
         }}
     </style>
     <div class="predicted-views-container">
-        <p class="predicted-views-title">Predicted views 30 days after your upload to a slide-sharing platform (e.g. Speakerdeck.com)</p>
+        <p class="predicted-views-title">
+            Predicted views 30 days after your upload to a slide-sharing platform
+            (e.g. Speakerdeck.com)
+        </p>
         <p class="predicted-views-number">{predicted_views}</p>
     </div>
     """
@@ -117,4 +120,3 @@ def html_transformer(predicted_views: int, scores: QualityScores) -> tuple[str, 
     """
 
     return quality_dimensions_html, predicted_views_html
-

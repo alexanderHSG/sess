@@ -64,7 +64,10 @@ class PredictViewsUseCase:
 
         quality_scores = aggregate_quality_scores(explanation.as_list(), request.author)
         predicted_views = int(np.exp(svr_predictions[0]) - 0.1)
-        quality_dimensions_html, predicted_views_html = html_transformer(predicted_views, quality_scores)
+        quality_dimensions_html, predicted_views_html = html_transformer(
+            predicted_views,
+            quality_scores,
+        )
 
         return ViewPredictionResult(
             predicted_views=predicted_views,
@@ -72,4 +75,3 @@ class PredictViewsUseCase:
             quality_dimensions_html=quality_dimensions_html,
             predicted_views_html=predicted_views_html,
         )
-

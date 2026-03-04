@@ -20,7 +20,9 @@ class FactCheckClient:
 
     def verify_markdown(self, markdown_input: str) -> list[FactualityItem]:
         if not self.hf_token:
-            raise ExternalServiceError("Missing Hugging Face token in environment variable `token`.")
+            raise ExternalServiceError(
+                "Missing Hugging Face token in environment variable `token`."
+            )
 
         try:
             client = GradioClient(self.space_name, hf_token=self.hf_token)
@@ -49,4 +51,3 @@ class FactCheckClient:
             verification_result=verification_result,
             search_string=search_string,
         )
-

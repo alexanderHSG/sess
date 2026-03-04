@@ -13,7 +13,7 @@ from sess.domain.errors import ArtifactNotFoundError
 class ModelRegistry:
     """Lazy-loading singleton model registry."""
 
-    _instance: "ModelRegistry | None" = None
+    _instance: ModelRegistry | None = None
     _instance_lock = Lock()
 
     def __init__(self, mlp_path: Path, svr_path: Path, rfr_path: Path) -> None:
@@ -27,7 +27,7 @@ class ModelRegistry:
         self._rfr_model: Any = None
 
     @classmethod
-    def get_instance(cls, mlp_path: Path, svr_path: Path, rfr_path: Path) -> "ModelRegistry":
+    def get_instance(cls, mlp_path: Path, svr_path: Path, rfr_path: Path) -> ModelRegistry:
         if cls._instance is not None:
             return cls._instance
         with cls._instance_lock:
@@ -66,4 +66,3 @@ class ModelRegistry:
     def rfr(self) -> Any:
         self._ensure_loaded()
         return self._rfr_model
-

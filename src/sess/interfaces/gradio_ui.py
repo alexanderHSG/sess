@@ -16,6 +16,33 @@ from sess.logging import get_logger
 
 logger = get_logger(__name__)
 
+INTRO_TEXT = """
+Welcome to the Slide Deck Evaluation Dashboard, where advanced AI evaluates the content,
+design, and communication efficacy of your presentations. Enhance your insights with
+customized feedback, automated fact-checks, and AI-driven verification.
+Upload your slide deck in PDF format, tailor your settings, and start evaluation.
+""".strip()
+
+QUALITY_EXPLAINER_TEXT = """
+## Intrinsic Quality
+Intrinsic quality refers to the inherent value of content, assessed through organization,
+clarity, and relevance.
+## Contextual Quality
+Contextual quality assesses how informative and relevant content is, considering pages,
+image density, and category.
+## Representational Quality
+Representational quality gauges clarity and informativeness by analyzing mean words per
+slide and word count variance.
+## Reputational Quality
+Reputational quality evaluates authority and trustworthiness by examining author
+recognition and field credibility.
+""".strip()
+
+CHECKPOINT_EXPLAINER_TEXT = """
+We analyze slide design based on checkpoints including pictograms, subheadings, emphasis,
+hierarchy, flow, structure, and citation consistency.
+""".strip()
+
 
 def _run_async(coro: Any) -> Any:
     try:
@@ -29,45 +56,60 @@ def _run_async(coro: Any) -> Any:
 
 def _extract_selected_image_path(images: Any, index: int) -> str:
     selected = images[index]
-    if isinstance(selected, (list, tuple)):
+    if isinstance(selected, list | tuple):
         return str(selected[0])
     return str(selected)
 
 
 def _popup_content_category() -> None:
     gr.Info(
-        "Choose a content category: Indicate the purpose for which you intend to publish the slide deck and the evaluation will be adjusted accordingly."
+        "Choose a content category: "
+        "indicate the purpose for publishing and the evaluation will adjust."
     )
 
 
 def _popup_author() -> None:
-    gr.Info("Select the author's name: Select the author's name to assign the slide deck to the author accordingly.")
+    gr.Info(
+        "Select the author's name: "
+        "assign the uploaded slide deck to the chosen author profile."
+    )
 
 
 def _popup_timeline() -> None:
     gr.Info(
-        "Customize your view prediction timeline: Choose how many days after upload you would like to predict the viewer engagement."
+        "Customize your view prediction timeline: "
+        "choose the number of days after upload for viewer engagement."
     )
 
 
 def _popup_education_level() -> None:
     gr.Info(
-        "Enter ISCED-level of education of your audience: Indicate the educational degree of your audience to make the evaluation align with the educational aspiration."
+        "Enter the ISCED-level of your audience: "
+        "align evaluation with educational aspiration."
     )
 
 
 def _popup_start() -> None:
     gr.Info(
-        "Start to evaluate your slide deck: Based on your specified requirements and the uploaded slide deck, you can now start the AI-based evaluation."
+        "Start deck evaluation: "
+        "with your selected settings, run the AI-based analysis."
     )
 
 
 def _popup_fact() -> None:
-    gr.Info("Check the content of your slide deck: Verify the veracity of the content on the slides with our factuality check.")
+    gr.Info(
+        "Check content veracity: "
+        "verify factual claims from the slides with the factuality check."
+    )
 
 
 def create_demo(container: AppContainer) -> gr.TabbedInterface:
-    def process_deck(uploaded_file: str, category: str, prediction_days: int, author: str) -> tuple[str, str, str]:
+    def process_deck(
+        uploaded_file: str,
+        category: str,
+        prediction_days: int,
+        author: str,
+    ) -> tuple[str, str, str]:
         if not uploaded_file:
             return "", "", "Please upload a PDF file before processing."
 
@@ -109,17 +151,11 @@ def create_demo(container: AppContainer) -> gr.TabbedInterface:
 
     with gr.Blocks() as demo_tab1:
         gr.Markdown("# Slide Deck Evaluation Dashboard")
-        gr.Markdown(
-            """
-            Welcome to the Slide Deck Evaluation Dashboard, where advanced AI evaluates the content,
-            design, and communication efficacy of your presentations. Enhance your insights with customized
-            feedback, automated fact-checks, and AI-driven verification. Upload your slide deck in PDF format,
-            tailor your settings, and start evaluation.
-            """
-        )
+        gr.Markdown(INTRO_TEXT)
 
         with gr.Row():
             upload = gr.File(label="Upload your slide deck", file_types=[".pdf"])
+            upload.change(lambda _: _popup_content_category(), inputs=[upload], outputs=[])
 
             category = gr.Dropdown(
                 choices=list(CATEGORY_CHOICES),
@@ -152,34 +188,47 @@ def create_demo(container: AppContainer) -> gr.TabbedInterface:
             process_btn.click(lambda _: _popup_fact(), inputs=[process_btn], outputs=[])
 
             category.change(lambda _: _popup_author(), inputs=[category], outputs=[])
-            prediction_days.change(lambda _: _popup_education_level(), inputs=[prediction_days], outputs=[])
-            level_of_education.change(lambda _: _popup_start(), inputs=[level_of_education], outputs=[])
+            prediction_days.change(
+                lambda _: _popup_education_level(),
+                inputs=[prediction_days],
+                outputs=[],
+            )
+            level_of_education.change(
+                lambda _: _popup_start(),
+                inputs=[level_of_education],
+                outputs=[],
+            )
 
         with gr.Row():
             fact_display = gr.Markdown(label="Fact checker results:")
 
-        with gr.Accordion(label="Decoding the Measurements: How are quality dimensions assessed?", open=False):
-            gr.Markdown(
-                """## Intrinsic Quality
-Intrinsic quality refers to the inherent value of content, assessed through organization, clarity, and relevance.
-## Contextual Quality
-Contextual quality assesses how informative and relevant content is, considering pages, image density, and category.
-## Representational Quality
-Representational quality gauges clarity and informativeness by analyzing mean words per slide and word count variance.
-## Reputational Quality
-Reputational quality evaluates authority and trustworthiness by examining author recognition and field credibility.
-"""
-            )
+        with gr.Accordion(
+            label="Decoding the Measurements: How are quality dimensions assessed?",
+            open=False,
+        ):
+            gr.Markdown(QUALITY_EXPLAINER_TEXT)
         quality_dimensions_output = gr.HTML()
         predicted_views_output = gr.HTML()
 
     with gr.Blocks() as demo_tab2:
         with gr.Row():
-            image_slider = gr.Gallery(label="Slide Viewer", allow_preview=True, interactive=False)
+            image_slider = gr.Gallery(
+                label="Slide Viewer",
+                allow_preview=True,
+                interactive=False,
+            )
             upload.change(handle_upload, inputs=[upload], outputs=[image_slider])
             category.change(lambda _: _popup_author(), inputs=[category], outputs=[])
-            prediction_days.change(lambda _: _popup_education_level(), inputs=[prediction_days], outputs=[])
-            level_of_education.change(lambda _: _popup_start(), inputs=[level_of_education], outputs=[])
+            prediction_days.change(
+                lambda _: _popup_education_level(),
+                inputs=[prediction_days],
+                outputs=[],
+            )
+            level_of_education.change(
+                lambda _: _popup_start(),
+                inputs=[level_of_education],
+                outputs=[],
+            )
 
         process_btn.click(
             process_deck,
@@ -192,19 +241,24 @@ Reputational quality evaluates authority and trustworthiness by examining author
                 feedback_button = gr.Button("Give me feedback on this slide")
                 selected = gr.Number(show_label=False, visible=False)
 
-        with gr.Accordion(label="Decoding the Feedback: How are checkpoints assessed?", open=False):
-            gr.Markdown(
-                """We analyze slide design based on checkpoints including pictograms, subheadings,
-emphasis, hierarchy, flow, structure, and citation consistency."""
-            )
+        with gr.Accordion(
+            label="Decoding the Feedback: How are checkpoints assessed?",
+            open=False,
+        ):
+            gr.Markdown(CHECKPOINT_EXPLAINER_TEXT)
 
         with gr.Row():
             feedback_output = gr.Textbox(label="Slide Feedback")
 
         image_slider.select(get_select_index, None, selected)
-        feedback_button.click(on_feedback_button_click, inputs=[image_slider, selected], outputs=[feedback_output])
+        feedback_button.click(
+            on_feedback_button_click,
+            inputs=[image_slider, selected],
+            outputs=[feedback_output],
+        )
 
     return gr.TabbedInterface(
         [demo_tab1, demo_tab2],
         ["Overall Slide Evaluation", "Single Slide Feedback"],
     )
+

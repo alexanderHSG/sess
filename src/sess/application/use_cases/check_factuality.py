@@ -18,7 +18,10 @@ def format_factuality_markdown(items: list[FactualityItem]) -> str:
         "| Statements Found in the Presentation | Verification Result | "
         "Link to Consensus Research Assistant and Google for Background Info |\n"
     )
-    output += "|--------------------------------------|:-------------------:|----------------------------------------------------|\n"
+    output += (
+        "|--------------------------------------|:-------------------:"
+        "|----------------------------------------------------|\n"
+    )
 
     for item in items:
         normalized = item.verification_result.strip().lower()
@@ -29,7 +32,10 @@ def format_factuality_markdown(items: list[FactualityItem]) -> str:
         google_link = ""
         if not is_true:
             query = urllib.parse.quote(item.search_string)
-            consensus_link = f"[Consensus](https://consensus.app/results/?q={query}&synthesize=on&copilot=on)"
+            consensus_link = (
+                "[Consensus](https://consensus.app/results/"
+                f"?q={query}&synthesize=on&copilot=on)"
+            )
             google_link = f"[Google](https://www.google.com/search?q={query})"
 
         statement = item.statement.replace("\n", " ")
@@ -43,7 +49,11 @@ def format_factuality_markdown(items: list[FactualityItem]) -> str:
 
 
 class CheckFactualityUseCase:
-    def __init__(self, parser_client: LlamaParseClient, factcheck_client: FactCheckClient) -> None:
+    def __init__(
+        self,
+        parser_client: LlamaParseClient,
+        factcheck_client: FactCheckClient,
+    ) -> None:
         self._parser_client = parser_client
         self._factcheck_client = factcheck_client
 
@@ -52,4 +62,3 @@ class CheckFactualityUseCase:
         parsed_markdown = self._parser_client.parse_to_markdown(file_path)
         items = self._factcheck_client.verify_markdown(parsed_markdown)
         return format_factuality_markdown(items)
-

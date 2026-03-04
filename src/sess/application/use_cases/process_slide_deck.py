@@ -20,7 +20,9 @@ class ProcessSlideDeckUseCase:
 
     async def execute(self, request: SlideDeckRequest) -> SlideDeckProcessingResult:
         view_task = asyncio.create_task(self._predict_views_use_case.execute(request))
-        factuality_task = asyncio.create_task(self._factuality_use_case.execute(request.uploaded_file))
+        factuality_task = asyncio.create_task(
+            self._factuality_use_case.execute(request.uploaded_file)
+        )
 
         factuality_markdown = await factuality_task
         view_prediction = await view_task
@@ -30,4 +32,3 @@ class ProcessSlideDeckUseCase:
             predicted_views_html=view_prediction.predicted_views_html,
             factuality_markdown=factuality_markdown,
         )
-

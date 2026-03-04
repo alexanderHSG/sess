@@ -17,9 +17,16 @@ class OpenAISlideFeedbackClient:
     api_key: str
     model_name: str
 
-    def generate_slide_feedback(self, image_path: str | Path, prompt: str, max_tokens: int = 2048) -> str:
+    def generate_slide_feedback(
+        self,
+        image_path: str | Path,
+        prompt: str,
+        max_tokens: int = 2048,
+    ) -> str:
         if not self.api_key:
-            raise ExternalServiceError("Missing OpenAI API key in environment variable `OpenAI`.")
+            raise ExternalServiceError(
+                "Missing OpenAI API key in environment variable `OpenAI`."
+            )
 
         image_file_path = Path(image_path)
         with image_file_path.open("rb") as file_handle:
@@ -62,4 +69,3 @@ class OpenAISlideFeedbackClient:
             return data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as error:
             raise ExternalServiceError("Unexpected OpenAI response schema.") from error
-

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from threading import Lock
-from typing import Callable, Iterable
 
 import lime.lime_tabular
 import numpy as np
@@ -74,7 +74,10 @@ class LimeExplainerProvider:
         return self._explainer
 
 
-def aggregate_quality_scores(explanation_rows: Iterable[tuple[str, float]], author: str) -> QualityScores:
+def aggregate_quality_scores(
+    explanation_rows: Iterable[tuple[str, float]],
+    author: str,
+) -> QualityScores:
     reputational_score = 0.0
     contextual_score = 0.0
     representational_score = 0.0

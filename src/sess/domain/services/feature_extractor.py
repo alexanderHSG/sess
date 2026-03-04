@@ -35,7 +35,6 @@ def analyze_slidedeck_pdf(pdf_path: str) -> dict[str, Any] | None:
     if not image_counts:
         image_counts = [1]
 
-    mean_num_images = statistics.mean(image_counts)
     std_num_images = statistics.stdev(image_counts) if len(image_counts) > 1 else 0
     total_num_images = sum(image_counts)
 
@@ -68,4 +67,3 @@ def analyze_slidedeck_pdf(pdf_path: str) -> dict[str, Any] | None:
         "readability": readability,
         "content": content,
     }
-
