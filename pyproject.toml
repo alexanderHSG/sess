@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sess"
+version = "0.1.0"
+description = "AI-powered slide deck evaluation dashboard."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "gradio==4.26.0",
+  "gradio_client==0.15.1",
+  "lime==0.2.0.1",
+  "llama-parse==0.5.15",
+  "nest-asyncio==1.6.0",
+  "numpy==1.26.4",
+  "pandas==2.2.3",
+  "pdfplumber==0.11.4",
+  "Pillow==10.4.0",
+  "pydantic==2.11.1",
+  "pydantic-settings==2.8.1",
+  "PyMuPDF==1.24.14",
+  "requests==2.32.3",
+  "uvloop==0.21.0; platform_system != 'Windows'",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy==1.15.0",
+  "pytest==8.3.5",
+  "ruff==0.9.10",
+  "types-requests==2.32.0.20250306",
+]
+
+[project.scripts]
+sess = "sess.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+warn_unused_configs = true
+check_untyped_defs = true
+ignore_missing_imports = true
