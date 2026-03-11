@@ -1,14 +1,3 @@
----
-title: Sess
-emoji: 📚
-colorFrom: indigo
-colorTo: yellow
-sdk: gradio
-sdk_version: 4.26.0
-app_file: app.py
-pinned: false
----
-
 # Slide Deck Evaluation Dashboard
 
 AI-powered evaluation for presentation slide decks (PDF), including:
@@ -131,6 +120,26 @@ This repo includes professional engineering scaffolding:
 - [Configuration](docs/CONFIGURATION.md)
 - [Module Reference](docs/MODULES.md)
 - [Contributing](CONTRIBUTING.md)
+
+## Research Background
+
+This tool is built on a research programme on AI-assisted slide evaluation. If you use this work, please consider citing the relevant papers below.
+
+### System Design
+
+> Alexander Meier, Roman Rietsche, Ivo Blohm (2024). **Towards Assisted Excellence: Designing an AI-Based System for Presentation Slide Evaluation.** In *Proceedings of the 19th International Conference on Design Science Research in Information Systems and Technology (DESRIST 2024)*, Trollhättan, Sweden, 3–5 June 2024.
+> [https://www.alexandria.unisg.ch/handle/20.500.14171/120285](https://www.alexandria.unisg.ch/handle/20.500.14171/120285)
+
+A full paper extending this work is forthcoming in the **HCI International 2026 Conference Proceedings** (Alexander Meier & Maren Cordts).
+
+The figure below illustrates the interface and design features (DF) of the system:
+
+![Interface and design features of the slide evaluation system](docs/Figure2.svg)
+
+### Audience Reach Prediction Model
+
+> Alexander Meier, Roman Rietsche, Ivo Blohm (2024). **An AI Approach for Predicting Audience Reach of Presentation Slides.** *ECIS 2024 Proceedings*, Short Paper 2322.
+> [https://aisel.aisnet.org/ecis2024/track04_impactai/track04_impactai/9](https://aisel.aisnet.org/ecis2024/track04_impactai/track04_impactai/9)
 
 ## Security Note
 
